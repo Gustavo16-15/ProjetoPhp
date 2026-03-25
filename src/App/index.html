@@ -742,6 +742,7 @@ function addToCart(productId, qty = 1) {
                 price: parseFloat(cardInHtml.querySelector('.product-price').innerText.replace('R$', '').replace(',', '.').trim())
             };
         }
+        
     }
 
     if (!product) return;
@@ -755,6 +756,18 @@ function addToCart(productId, qty = 1) {
     saveCart();
     updateCartCount();
     showCartToast();
+    
+     // --- PARTE B: SALVA NO BANCO DE DADOS (O que faltava) ---
+    // Envia o ID para o seu arquivo PHP processar o INSERT
+    fetch('adicionar.php?id=' + productId)
+        .then(response => {
+            if (response.ok) {
+                console.log("Banco de dados atualizado!");
+            } else {
+                console.error("Erro ao salvar no banco.");
+            }
+        })
+        .catch(err => console.error("Erro de conexão:", err));
 }
 
 // =======================================================
