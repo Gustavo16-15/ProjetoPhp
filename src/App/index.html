@@ -759,16 +759,30 @@ function addToCart(productId, qty = 1) {
     
      // --- PARTE B: SALVA NO BANCO DE DADOS (O que faltava) ---
     // Envia o ID para o seu arquivo PHP processar o INSERT
-    fetch('adicionar.php?id=' + productId)
-        .then(response => {
-            if (response.ok) {
-                console.log("Banco de dados atualizado!");
-            } else {
-                console.error("Erro ao salvar no banco.");
-            }
-        })
-        .catch(err => console.error("Erro de conexão:", err));
+    //fetch('adicionar.php?id=' + productId)
+       // .then(response => {
+           // if (response.ok) {
+               // console.log("Banco de dados atualizado!");
+           // } else {
+               // console.error("Erro ao salvar no banco.");
+           // }
+       // })
+        //.catch(err => console.error("Erro de conexão:", err));
+
+        // --- PARTE B: SALVA NO BANCO DE DADOS ---
+   
+    fetch('adicionar.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: 'id_produto=' + productId // Exatamente como o PHP espera
+    })
+    .then(response => response.text())
+    .then(texto => {
+        console.log("Servidor diz:", texto);
+    })
+    .catch(err => console.error("Erro ao salvar no banco:", err));
 }
+
 
 // =======================================================
 // BUSCA E RENDERIZAÇÃO
@@ -786,15 +800,27 @@ function createProductCard(product) {
         </article>`;
 }
 
-function attachCartEvents() {
+//function attachCartEvents() {
+    //document.querySelectorAll(".add-to-cart").forEach(button => {
+        //button.onclick = (e) => {
+            //e.preventDefault();
+            //const id = parseInt(button.getAttribute("data-id"));
+            //if (!isNaN(id)) addToCart(id);
+        //};
+    //});
+//}
+//novo codigo
+ function attachCartEvents() {
     document.querySelectorAll(".add-to-cart").forEach(button => {
-        button.onclick = (e) => {
-            e.preventDefault();
-            const id = parseInt(button.getAttribute("data-id"));
-            if (!isNaN(id)) addToCart(id);
+        button.onclick = function() {
+            const id = parseInt(this.getAttribute("data-id"));
+            if (!isNaN(id)) {
+                addToCart(id);
+            }
         };
     });
 }
+ 
 function renderCatalog(category) {
     const grid = document.getElementById("catalog-results");
     const catalogTitle = document.getElementById("catalog-title");
